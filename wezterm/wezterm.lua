@@ -7,7 +7,7 @@ local config = wezterm.config_builder()
 -- This is where you actually apply your config choices.
 
 -- Initial geometry for new windows:
-config.initial_cols = 80
+config.initial_cols = 100
 config.initial_rows = 30
 
 -- or, changing the font size and color scheme.
