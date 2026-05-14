@@ -1,30 +1,53 @@
--- Pull in the wezterm API
 local wezterm = require("wezterm")
 
--- This will hold the configuration
 local config = wezterm.config_builder()
+config:set_strict_mode(true)
 
--- This is where you actually apply your config choices.
+if wezterm.gui then
+  config.initial_cols = 100
+  config.initial_rows = 30
 
--- Initial geometry for new windows:
-config.initial_cols = 100
-config.initial_rows = 30
+  config.launch_menu = {
+    {
+      label = "btop",
+      args = { "/opt/homebrew/bin/btop" },
+    },
+    {
+      label = "zsh",
+      args = { "zsh", "-l" },
+    },
+  }
 
--- or, changing the font size and color scheme.
-config.font_size = 16
-config.color_scheme = "GruvboxDark"
+  config.keys = {
+    {
+      key = "p",
+      mods = "CMD",
+      action = wezterm.action.ShowLauncher,
+    },
+  }
 
--- Other appearances
-config.hide_tab_bar_if_only_one_tab = true
--- config.window_background_opacity = 0.3
--- config.macos_window_background_blur = 20
-config.window_decorations = "RESIZE"
+  config.font_size = 18
+  local appearance = wezterm.gui.get_appearance()
+  if appearance:find("Dark") then
+    config.color_scheme = "GruvboxDark"
+  else
+    config.color_scheme = "GruvboxLight"
+  end
 
--- Fonts
-config.font = wezterm.font("FiraCode Nerd Font")
+  config.set_environment_variables = {
+    THEME_MODE = wezterm.gui.get_appearance():lower():find("dark") and "dark"
+      or "light",
+  }
 
--- Actual productivity stuff
-config.default_cwd = "/Users/gabriel/dev"
+  config.enable_tab_bar = false
+  config.window_decorations = "RESIZE"
 
--- Finally, return the configuration to wezterm:
+  local font_name = "JetBrainsMono Nerd Font"
+  config.font = wezterm.font(font_name)
+
+  local home = "/Users/gabriel"
+  local dev = "/dev"
+  config.default_cwd = home .. dev
+end
+
 return config
